@@ -3,13 +3,15 @@ package victorops
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func (api *Client) get(path string, values url.Values, intf interface{}, debug bool) error {
 	client := &http.Client{
-		Timeout: 10,
+		Timeout: 10 * time.Second,
 	}
 
 	req, err := http.NewRequest("GET", victorOpsAPI+path, nil)
@@ -26,6 +28,9 @@ func (api *Client) get(path string, values url.Values, intf interface{}, debug b
 	resp.Body.Close()
 	if err != nil {
 		return err
+	}
+	if debug {
+		log.Println(string(data))
 	}
 	err = json.Unmarshal(data, &intf)
 	if err != nil {

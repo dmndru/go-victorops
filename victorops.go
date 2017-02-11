@@ -6,7 +6,7 @@ var logger *log.Logger // A logger that can be set by consumers
 /*
   Added as a var so that we can change this for testing purposes
 */
-const victorOpsAPI = "https://api.vitorops.com/"
+const victorOpsAPI = "https://api.victorops.com/"
 
 // Client is http api client
 type Client struct {

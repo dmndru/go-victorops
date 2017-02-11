@@ -16,8 +16,8 @@ type User struct {
 
 // UsersResponse response to GetUsers
 type usersResponse struct {
-	Members []User `json:"users"`
-	SelfURL string `json:"_selfUrl"`
+	Members [][]User `json:"users"`
+	SelfURL string   `json:"_selfUrl"`
 }
 
 // UserInfo params for creating/modifying a user
@@ -31,9 +31,9 @@ type UserInfo struct {
 }
 
 // GetUsers Get a list of users for your organization
-func (client *Client) GetUsers() ([]User, error) {
+func (client *Client) GetUsers() ([][]User, error) {
 	var (
-		users []User
+		users [][]User
 	)
 	response := &usersResponse{}
 	err := client.get("api-public/v1/user", url.Values{}, response, true)
