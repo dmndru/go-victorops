@@ -1,6 +1,9 @@
 package victorops
 
-import "net/url"
+import (
+	"encoding/json"
+	"net/url"
+)
 
 // User contains all the information of a user
 type User struct {
@@ -22,12 +25,17 @@ type usersResponse struct {
 
 // UserInfo params for creating/modifying a user
 type UserInfo struct {
-	firstName       string
-	lastName        string
-	username        string
-	email           string
-	admin           bool
-	expirationHours int
+	FirstName       string `json:"firstName"`
+	LastName        string `json:"lastName"`
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Admin           bool   `json:"admin,omitempty"`
+	ExpirationHours int    `json:"expirationHours,omitempty"`
+}
+
+// NewUser initialize struct for creating a user
+func NewUser(name, surname, nick, email string, isAdmin bool, expire int) UserInfo {
+	return UserInfo{name, surname, nick, email, isAdmin, expire}
 }
 
 // GetUsers Get a list of users for your organization
@@ -45,7 +53,16 @@ func (client *Client) GetUsers() ([][]User, error) {
 
 // AddUser Add a user to your organization
 func (client *Client) AddUser(info UserInfo) (User, error) {
-	return User{}, nil
+	jsonData, err := json.Marshal(info)
+	if err != nil {
+		return User{}, err
+	}
+	response := &User{}
+	err = client.post("api-public/v1/user", jsonData, response)
+	if err != nil {
+		return User{}, err
+	}
+	return *response, nil
 }
 
 // RemoveUser Remove a user from your organization

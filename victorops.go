@@ -18,10 +18,11 @@ type Client struct {
 }
 
 // New initialize api client with api id and key
-func New(id, key string) *Client {
+func New(id, key string, debug bool) *Client {
 	s := &Client{}
 	s.config.id = id
 	s.config.key = key
+	s.debug = debug
 	return s
 }
 
