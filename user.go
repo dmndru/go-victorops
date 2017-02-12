@@ -54,8 +54,13 @@ func (client *Client) RemoveUser(user, replacement string) error {
 }
 
 // GetUserInfo Get the information for the specified user
-func (client *Client) GetUserInfo(user string) (User, error) {
-	return User{}, nil
+func (client *Client) GetUserInfo(nick string) (User, error) {
+	response := &User{}
+	err := client.get("api-public/v1/user/"+nick, url.Values{}, response, true)
+	if err != nil {
+		return User{}, err
+	}
+	return *response, nil
 }
 
 // UpdateUser Update the designated user
