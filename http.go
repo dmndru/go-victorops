@@ -3,10 +3,12 @@ package victorops
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -25,8 +27,27 @@ func (api *Client) get(path string, values url.Values, intf interface{}, debug b
 	if err != nil {
 		return err
 	}
-	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
+	if resp.StatusCode != 200 {
+		switch resp.StatusCode {
+		case 400:
+			err = errors.New("Problem with the request arguments")
+		case 401:
+			err = errors.New("Authentication parameters missing")
+		case 403:
+			err = errors.New("Authentication failed or rate-limit reached")
+		case 404:
+			err = errors.New("Object not found")
+		case 421:
+			err = errors.New("You have reached your user limit")
+		case 500:
+			err = errors.New("Internal server error")
+		default:
+			err = errors.New("Unknown response code: " + strconv.Itoa(resp.StatusCode))
+		}
+		return err
+	}
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
@@ -57,8 +78,27 @@ func (api *Client) post(path string, values []byte, intf interface{}) error {
 	if err != nil {
 		return err
 	}
-	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
+	if resp.StatusCode != 200 {
+		switch resp.StatusCode {
+		case 400:
+			err = errors.New("Problem with the request arguments")
+		case 401:
+			err = errors.New("Authentication parameters missing")
+		case 403:
+			err = errors.New("Authentication failed or rate-limit reached")
+		case 404:
+			err = errors.New("Object not found")
+		case 422:
+			err = errors.New("Username or email is unavailable, or you have reached your user limit")
+		case 500:
+			err = errors.New("Internal server error")
+		default:
+			err = errors.New("Unknown response code: " + strconv.Itoa(resp.StatusCode))
+		}
+		return err
+	}
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
