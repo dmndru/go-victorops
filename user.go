@@ -66,8 +66,14 @@ func (client *Client) AddUser(info UserInfo) (User, error) {
 }
 
 // RemoveUser Remove a user from your organization
-func (client *Client) RemoveUser(user, replacement string) error {
-	return nil
+func (client *Client) RemoveUser(username, replacement string) error {
+	values := map[string]string{"replacement": replacement}
+	jsonData, err := json.Marshal(values)
+	if err != nil {
+		return err
+	}
+	err = client.delete("api-public/v1/user/"+username, jsonData)
+	return err
 }
 
 // GetUserInfo Get the information for the specified user
