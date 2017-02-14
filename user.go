@@ -1,9 +1,6 @@
 package victorops
 
-import (
-	"encoding/json"
-	"net/url"
-)
+import "encoding/json"
 
 // User contains all the information of a user
 type User struct {
@@ -44,7 +41,7 @@ func (client *Client) GetUsers() ([][]User, error) {
 		users [][]User
 	)
 	response := &usersResponse{}
-	err := client.get("api-public/v1/user", url.Values{}, response, true)
+	err := client.sendRequest("GET", "api-public/v1/user", nil, response)
 	if err != nil {
 		return users, err
 	}
@@ -58,7 +55,7 @@ func (client *Client) AddUser(info UserInfo) (User, error) {
 		return User{}, err
 	}
 	response := &User{}
-	err = client.post("api-public/v1/user", jsonData, response)
+	err = client.sendRequest("POST", "api-public/v1/user", jsonData, response)
 	if err != nil {
 		return User{}, err
 	}
@@ -72,14 +69,14 @@ func (client *Client) RemoveUser(username, replacement string) error {
 	if err != nil {
 		return err
 	}
-	err = client.delete("api-public/v1/user/"+username, jsonData)
+	err = client.sendRequest("DELETE", "api-public/v1/user/"+username, jsonData, nil)
 	return err
 }
 
 // GetUserInfo Get the information for the specified user
 func (client *Client) GetUserInfo(nick string) (User, error) {
 	response := &User{}
-	err := client.get("api-public/v1/user/"+nick, url.Values{}, response, true)
+	err := client.sendRequest("GET", "api-public/v1/user/"+nick, nil, response)
 	if err != nil {
 		return User{}, err
 	}
@@ -87,6 +84,15 @@ func (client *Client) GetUserInfo(nick string) (User, error) {
 }
 
 // UpdateUser Update the designated user
-func (client *Client) UpdateUser(info UserInfo) (User, error) {
-	return User{}, nil
+func (client *Client) UpdateUser(nick string, info UserInfo) (User, error) {
+	jsonData, err := json.Marshal(info)
+	if err != nil {
+		return User{}, err
+	}
+	response := &User{}
+	err = client.sendRequest("PUT", "api-public/v1/user/"+nick, jsonData, response)
+	if err != nil {
+		return User{}, err
+	}
+	return *response, nil
 }
