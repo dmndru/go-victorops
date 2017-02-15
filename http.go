@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -35,7 +34,7 @@ func (api *Client) sendRequest(method, path string, values []byte, intf interfac
 		return err
 	}
 	if api.debug {
-		log.Println(string(data))
+		logger.Println(string(data))
 	}
 
 	if resp.StatusCode != 200 {
