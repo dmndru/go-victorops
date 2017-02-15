@@ -1,6 +1,9 @@
 package victorops
 
-import "log"
+import (
+	"log"
+	"os"
+)
 
 var logger *log.Logger // A logger that can be set by consumers
 /*
@@ -23,6 +26,9 @@ func New(id, key string, debug bool) *Client {
 	s.config.id = id
 	s.config.key = key
 	s.debug = debug
+	if debug && logger == nil {
+		logger = log.New(os.Stdout, "dmndru/go-victorops", log.LstdFlags|log.Lshortfile)
+	}
 	return s
 }
 
