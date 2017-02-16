@@ -2,36 +2,36 @@ package victorops
 
 // Schedule current schedule
 type Schedule struct {
-	Oncall         string     `json:"oncall"`
-	OverrideOncall string     `json:"overrideoncall"`
-	PolicyType     string     `json:"policyType"`
-	RotationName   string     `json:"rotationName"`
-	ShiftName      string     `json:"shiftName"`
-	ShiftRoll      int        `json:"shiftRoll"`
-	Rolls          []Roll     `json:"rolls"`
-	Overrides      []Override `json:"overrides"`
+	Oncall         string `json:"oncall,omitempty"`
+	OverrideOncall string `json:"overrideoncall,omitempty"`
+	PolicyType     string `json:"policyType,omitempty"`
+	RotationName   string `json:"rotationName,omitempty"`
+	ShiftName      string `json:"shiftName,omitempty"`
+	ShiftRoll      int    `json:"shiftRoll,omitempty"`
+	Rolls          []Roll `json:"rolls,omitempty"`
 }
 
 // Roll is shcedule roll
 type Roll struct {
-	Change int    `json:"change"`
-	Until  int    `json:"until"`
-	Oncall string `json:"oncall"`
-	IsRoll bool   `json:"isroll"`
+	Change int    `json:"change,omitempty"`
+	Until  int    `json:"until,omitempty"`
+	Oncall string `json:"oncall,omitempty"`
+	IsRoll bool   `json:"isroll,omitempty"`
 }
 
 // Override describes oncall overrides
 type Override struct {
-	Orig  string `json:"orig"`
-	Over  string `json:"over"`
-	Start int    `json:"start"`
-	End   int    `json:"end"`
+	Orig  string `json:"orig,omitempty"`
+	Over  string `json:"over,omitempty"`
+	Start int    `json:"start,omitempty"`
+	End   int    `json:"end,omitempty"`
 }
 
 // TeamSchedule is api response struct
 type TeamSchedule struct {
 	Team      string     `json:"team"`
 	Schedules []Schedule `json:"schedule"`
+	Overrides []Override `json:"overrides"`
 }
 
 // ResponseResult is result of an api request
@@ -42,6 +42,11 @@ type ResponseResult struct {
 //UserOncallSchedule returns the on-call schedule for a user for all teams, including on-call overrides
 func (client *Client) UserOncallSchedule(nick string) ([]TeamSchedule, error) {
 	var schd []TeamSchedule
+	//response := &schd
+	err := client.sendRequest("GET", "api-public/v1/user/"+nick+"/oncall/schedule", nil, &schd)
+	if err != nil {
+		return schd, err
+	}
 	return schd, nil
 }
 
