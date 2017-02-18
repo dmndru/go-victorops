@@ -17,6 +17,6 @@ type Alert struct {
 // AlertDetails retrieves the details of an alert that was sent VictorOps by you
 func (client *Client) AlertDetails(uuid string) (Alert, error) {
 	var alert Alert
-	err := client.sendRequest("GET", "/api-public/v1/alerts/"+uuid, nil, &alert)
+	err := client.sendRequest("GET", "api-public/v1/alerts/"+uuid, nil, &alert)
 	return alert, err
 }
