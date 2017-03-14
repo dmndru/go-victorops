@@ -119,7 +119,8 @@ func (client *Client) GetOncallLog(team string) (OncallLog, error) {
 // By default, only resolved incidents will be returned
 func (client *Client) GetIncidentsHistoryV1(filter IncidentsSearchParams) ([]IncidentsHistory, error) {
 	var hist []IncidentsHistory
-	return hist, nil
+	err := client.sendRequest("GET", "/api-reporting/v1/incidents", nil, &hist)
+	return hist, err
 }
 
 // GetIncidentsHistoryV2 retrieves incident history for your company, searching over date ranges and with filtering options.
@@ -130,5 +131,6 @@ func (client *Client) GetIncidentsHistoryV1(filter IncidentsSearchParams) ([]Inc
 // On return, the total number of records available for that query will be returned in the payload as 'total'.
 func (client *Client) GetIncidentsHistoryV2(filter IncidentsSearchParams) ([]IncidentDetailV2, error) {
 	var hist []IncidentDetailV2
-	return hist, nil
+	err := client.sendRequest("GET", "/api-reporting/v2/incidents", nil, &hist)
+	return hist, err
 }
