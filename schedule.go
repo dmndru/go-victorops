@@ -54,20 +54,14 @@ type ResponseResult struct {
 func (client *Client) UserOncallSchedule(nick string) ([]TeamSchedule, error) {
 	var schd []TeamSchedule
 	err := client.sendRequest("GET", "api-public/v1/user/"+nick+"/oncall/schedule", nil, &schd)
-	if err != nil {
-		return schd, err
-	}
-	return schd, nil
+	return schd, err
 }
 
 // TeamOncallSchedule Get the on-call schedule for a user for all teams, including on-call overrides
 func (client *Client) TeamOncallSchedule(team string) (TeamSchedule, error) {
 	var schd TeamSchedule
 	err := client.sendRequest("GET", "api-public/v1/team/"+team+"/oncall/schedule", nil, &schd)
-	if err != nil {
-		return schd, err
-	}
-	return schd, nil
+	return schd, err
 }
 
 // CreateOncallOverride replaces a currently on-call user on the team with another
