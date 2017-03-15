@@ -78,3 +78,28 @@ func (client *Client) UpdateTeam(name, newName string) (Team, error) {
 	err = client.sendRequest("PUT", "api-public/v1/team"+name, jsonData, &team)
 	return team, err
 }
+
+// GetTeamMembers Get the members for the specified team
+func (client *Client) GetTeamMembers(name string) (TeamMembersResp, error) {
+	var resp TeamMembersResp
+	err := client.sendRequest("GET", "api-public/v1/team/"+name+"/members", nil, &resp)
+	return resp, err
+}
+
+// AddTeamMember Add a team member to your team
+func (client *Client) AddTeamMember(name, username string) (TeamMembersResp, error) {
+	var resp TeamMembersResp
+	values := map[string]string{"username": username}
+	jsonData, err := json.Marshal(values)
+	if err != nil {
+		return resp, err
+	}
+	err = client.sendRequest("POST", "api-public/v1/team/"+name+"/members", jsonData, &resp)
+	return resp, err
+}
+
+// RemoveTeamMember remove member from a team
+func (client *Client) RemoveTeamMember(name, username string) error {
+	err := client.sendRequest("DELETE", "/api-public/v1/team/"+name+"/members/"+username, nil, nil)
+	return err
+}
